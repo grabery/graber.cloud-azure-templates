@@ -3,47 +3,39 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "hub-region": {
-            "defaultValue": "",
+            "defaultValue": "[resourceGroup().location]",
             "type": "String"
         },
         "virtualNetworks_hub-vnet_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "bastionHosts_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "spoke1-region": {
-            "defaultValue": "",
+            "defaultValue": "[resourceGroup().location]",
             "type": "String"
         },
         "virtualNetworks_spoke1_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "spoke2-region": {
-            "defaultValue": "",
+            "defaultValue": "[resourceGroup().location]",
             "type": "String"
         },
         "virtualNetworks_spoke2_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "networkSecurityGroups_hub_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "networkSecurityGroups_spoke1_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "networkSecurityGroups_spoke2_name": {
-            "defaultValue": "",
             "type": "String"
         },
         "networkSecurityGroups_bastion_name": {
-            "defaultValue": "",
             "type": "string"
         }
     },
