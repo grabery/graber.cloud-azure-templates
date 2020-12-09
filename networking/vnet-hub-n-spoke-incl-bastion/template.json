@@ -2,14 +2,20 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "environmentName": {
+            "defaultValue": "test",
+            "type": "string"
+        },
         "hub-region": {
             "defaultValue": "[resourceGroup().location]",
             "type": "String"
         },
         "virtualNetworks_hub-vnet_name": {
+            "defaultValue": "[concat('vnet-hub-', parameters('environmentName'), '-location-001')]",
             "type": "String"
         },
         "bastionHosts_name": {
+            "defaultValue": "[concat('bast-hub-', parameters('environmentName'), '-location-001')]",
             "type": "String"
         },
         "spoke1-region": {
@@ -17,6 +23,7 @@
             "type": "String"
         },
         "virtualNetworks_spoke1_name": {
+            "defaultValue": "[concat('vnet-spoke-', parameters('environmentName'), 'location-001')]",
             "type": "String"
         },
         "spoke2-region": {
@@ -24,19 +31,24 @@
             "type": "String"
         },
         "virtualNetworks_spoke2_name": {
+            "defaultValue": "[concat('vnet-spoke-', parameters('environmentName'), 'location-002')]",
             "type": "String"
         },
-        "networkSecurityGroups_hub_name": {
+        "networkSecurityGroups_hub_DMZ": {
+            "defaultValue":"nsg-hub-dmz-001",
             "type": "String"
         },
-        "networkSecurityGroups_spoke1_name": {
+        "networkSecurityGroups_hub_AzureBastionSubnet": {
+            "defaultValue":"nsg-hub-azurebastionsubnet-001",
+            "type": "String"
+        },        
+        "networkSecurityGroups_spoke1": {
+            "defaultValue": "nsg-spoke-default-001",
             "type": "String"
         },
-        "networkSecurityGroups_spoke2_name": {
+        "networkSecurityGroups_spoke2": {
+            "defaultValue": "nsg-spoke-default-002",
             "type": "String"
-        },
-        "networkSecurityGroups_bastion_name": {
-            "type": "string"
         }
     },
     "variables": {},
@@ -44,7 +56,7 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('networkSecurityGroups_hub_name')]",
+            "name": "[parameters('networkSecurityGroups_hub_DMZ')]",
             "location": "[parameters('hub-region')]",
             "properties": {
                 "securityRules": []
@@ -53,7 +65,16 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('networkSecurityGroups_spoke1_name')]",
+            "name": "[parameters('networkSecurityGroups_hub_AzureBastionSubnet')]",
+            "location": "[parameters('hub-region')]",
+            "properties": {
+                "securityRules": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('networkSecurityGroups_spoke1')]",
             "location": "[parameters('spoke1-region')]",
             "properties": {
                 "securityRules": []
@@ -62,17 +83,8 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('networkSecurityGroups_spoke2_name')]",
+            "name": "[parameters('networkSecurityGroups_spoke2')]",
             "location": "[parameters('spoke2-region')]",
-            "properties": {
-                "securityRules": []
-            }
-        },
-        {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2020-05-01",
-            "name": "[parameters('networkSecurityGroups_bastion_name')]",
-            "location": "[parameters('hub-region')]",
             "properties": {
                 "securityRules": []
             }
@@ -194,15 +206,19 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/AzureBastionSubnet')]",
+            "name": "[concat('snet-', parameters('environmentName'), '/AzureBastionSubnet')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_hub_AzureBastionSubnet'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.0.0/24",
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
+                "privateLinkServiceNetworkPolicies": "Enabled",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_hub_AzureBastionSubnet'))]"
+                }
             }
         },
         {
@@ -210,13 +226,17 @@
             "apiVersion": "2020-05-01",
             "name": "[concat(parameters('virtualNetworks_spoke2_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_spoke2'))]"
             ],
             "properties": {
                 "addressPrefix": "10.2.0.0/24",
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
+                "privateLinkServiceNetworkPolicies": "Enabled",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_spoke2'))]"
+                }
             }
         },
         {
@@ -224,13 +244,17 @@
             "apiVersion": "2020-05-01",
             "name": "[concat(parameters('virtualNetworks_spoke1_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke1_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke1_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_spoke1'))]"
             ],
             "properties": {
                 "addressPrefix": "10.1.0.0/24",
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
+                "privateLinkServiceNetworkPolicies": "Enabled",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_spoke1'))]"
+                }
             }
         },
         {
@@ -238,13 +262,17 @@
             "apiVersion": "2020-05-01",
             "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/DMZ')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_hub_DMZ'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.2.0/24",
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
+                "privateLinkServiceNetworkPolicies": "Enabled",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_hub_DMZ'))]"
+                }
             }
         },
         {
@@ -353,7 +381,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/hub-to-spoke2-peering')]",
+            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke-', parameters('environmentName'), '-002')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]"
@@ -377,7 +405,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/hub-to-spoke1-peering')]",
+            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke', parameters('environmentName'), '-001')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke1_name'))]"
@@ -401,7 +429,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_spoke2_name'), '/spoke2-to-hub-peering')]",
+            "name": "[concat(parameters('virtualNetworks_spoke2_name'), '/peer-spoke', parameters('environmentName'), '-002', '-to-hub')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
@@ -425,7 +453,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_spoke1_name'), '/spoke1-to-hub-peering')]",
+            "name": "[concat(parameters('virtualNetworks_spoke1_name'), '/peer-spoke', parameters('environmentName'), '-001', '-to-hub')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke1_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
