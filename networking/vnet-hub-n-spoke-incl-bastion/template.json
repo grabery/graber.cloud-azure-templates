@@ -11,11 +11,11 @@
             "type": "String"
         },
         "virtualNetworks_hub-vnet_name": {
-            "defaultValue": "[concat('vnet-hub-', parameters('environmentName'), '-location-001')]",
+            "defaultValue": "vnet-hub-$TEST/PROD-$LOCATION-001",
             "type": "String"
         },
         "bastionHosts_name": {
-            "defaultValue": "[concat('bast-hub-', parameters('environmentName'), '-location-001')]",
+            "defaultValue": "bast-hub-$TEST/PROD-$LOCATION-001",
             "type": "String"
         },
         "spoke1-region": {
@@ -23,7 +23,7 @@
             "type": "String"
         },
         "virtualNetworks_spoke1_name": {
-            "defaultValue": "[concat('vnet-spoke-', parameters('environmentName'), 'location-001')]",
+            "defaultValue": "vnet-spoke-$TEST/PROD-$LOCATION-001",
             "type": "String"
         },
         "spoke2-region": {
@@ -31,7 +31,7 @@
             "type": "String"
         },
         "virtualNetworks_spoke2_name": {
-            "defaultValue": "[concat('vnet-spoke-', parameters('environmentName'), 'location-002')]",
+            "defaultValue": "vnet-spoke-$TEST/PROD-$LOCATION-002",
             "type": "String"
         },
         "networkSecurityGroups_hub_DMZ": {
