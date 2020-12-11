@@ -59,7 +59,36 @@
             "name": "[parameters('networkSecurityGroups_hub_DMZ')]",
             "location": "[parameters('hub-region')]",
             "properties": {
-                "securityRules": []
+                "securityRules": [
+                    {
+                        "name": "INallowPort3389",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 3389 from Bastion",
+                            "priority": 110,
+                            "protocol": "*",
+                            "sourcePortRange": "3389",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "INallowPort22",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 22 from Bastion",
+                            "priority": 120,
+                            "protocol": "tcp",
+                            "sourcePortRange": "22",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -68,7 +97,64 @@
             "name": "[parameters('networkSecurityGroups_hub_AzureBastionSubnet')]",
             "location": "[parameters('hub-region')]",
             "properties": {
-                "securityRules": []
+                "securityRules": [
+                    {
+                        "name": "OUTallowPort3389",
+                        "properties": {
+                            "description": "This rule does allow outbound connections using port 3389 to the vnet",
+                            "priority": 110,
+                            "protocol": "*",
+                            "sourcePortRange": "3389",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "OUTallowPort22",
+                        "properties": {
+                            "description": "This rule does allow outbound connections using port 22 to the vnet",
+                            "priority": 120,
+                            "protocol": "tcp",
+                            "sourcePortRange": "22",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "OUTallowPort443",
+                        "properties": {
+                            "description": "This rule does allow outbound connections using port 443 to AzureCloud",
+                            "priority": 130,
+                            "protocol": "*",
+                            "sourcePortRange": "443",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "AzureCloud",
+                            "access": "Allow",
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "INallowPort443",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 443 to AzureBastion",
+                            "priority": 100,
+                            "protocol": "*",
+                            "sourcePortRange": "443",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -77,7 +163,36 @@
             "name": "[parameters('networkSecurityGroups_spoke1')]",
             "location": "[parameters('spoke1-region')]",
             "properties": {
-                "securityRules": []
+                "securityRules": [
+                    {
+                        "name": "INallowPort3389",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 3389 from Bastion",
+                            "priority": 110,
+                            "protocol": "*",
+                            "sourcePortRange": "3389",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "INallowPort22",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 22 from Bastion",
+                            "priority": 120,
+                            "protocol": "tcp",
+                            "sourcePortRange": "22",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -86,7 +201,36 @@
             "name": "[parameters('networkSecurityGroups_spoke2')]",
             "location": "[parameters('spoke2-region')]",
             "properties": {
-                "securityRules": []
+                "securityRules": [
+                    {
+                        "name": "INallowPort3389",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 3389 from Bastion",
+                            "priority": 110,
+                            "protocol": "*",
+                            "sourcePortRange": "3389",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "INallowPort22",
+                        "properties": {
+                            "description": "This rule does allow inbound connections using port 22 from Bastion",
+                            "priority": 120,
+                            "protocol": "tcp",
+                            "sourcePortRange": "22",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
             }
         },
         {
