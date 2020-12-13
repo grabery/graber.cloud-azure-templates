@@ -523,7 +523,8 @@
             "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke-', parameters('environmentName'), '-002')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke-', parameters('environmentName'), '001')]"
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -544,7 +545,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke', parameters('environmentName'), '-001')]",
+            "name": "[concat(parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke-', parameters('environmentName'), '-001')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke1_name'))]"
@@ -568,7 +569,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_spoke2_name'), '/peer-spoke', parameters('environmentName'), '-002', '-to-hub')]",
+            "name": "[concat(parameters('virtualNetworks_spoke2_name'), '/peer-spoke-', parameters('environmentName'), '-002', '-to-hub')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
@@ -592,7 +593,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_spoke1_name'), '/peer-spoke', parameters('environmentName'), '-001', '-to-hub')]",
+            "name": "[concat(parameters('virtualNetworks_spoke1_name'), '/peer-spoke-', parameters('environmentName'), '-001', '-to-hub')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke1_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
