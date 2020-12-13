@@ -248,7 +248,6 @@
                 "ipTags": []
             }
         },
-
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-05-01",
@@ -302,7 +301,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-05-01",
             "name": "[parameters('virtualNetworks_spoke1_name')]",
-            "location": "[parameters('spoke2-region')]",
+            "location": "[parameters('spoke1-region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]"
             ],
