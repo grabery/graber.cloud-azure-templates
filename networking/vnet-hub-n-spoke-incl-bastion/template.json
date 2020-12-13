@@ -524,7 +524,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub-vnet_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke2_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke-', parameters('environmentName'), '001')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_hub-vnet_name'), '/peer-hub-to-spoke-', parameters('environmentName'), '-001')]"
             ],
             "properties": {
                 "peeringState": "Connected",
