@@ -1,1 +1,42 @@
-
+{
+    "properties": {
+      "displayName": "Azure resources should be locked",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "This policy audits any azure resource groups which are not locked",
+      "metadata": {
+        "version": "2.0.0",
+        "category": "Governance"
+      },
+      "parameters": {
+        "ApplyPolicyTo": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Apply to tagged or all RG",
+            "description": "Choose if you want to check it for only specific tagged or for all resource groups."
+          },
+          "allowedValues": [
+            "Tagged",
+            "All"
+          ],
+          "defaultValue": "All"
+        },
+        "TagOfRg": {
+            "type":"String",
+            "metadata": {
+                "displayName": "Tag to check",
+                "description": "If you want to check only resource groups with a specific tag, define the name of the tag you want to check."
+            },
+            "defaultValue": ""
+        },
+        "TagValue": {
+            "type":"String",
+            "metadata":{
+                "displayName": "Value of the tag to check",
+                "description": "If you want to check only resource groups with a specific tag, define here the value of the tag you want to check."
+            },
+            "defaultValue": ""
+        }
+      }
+    }
+}
