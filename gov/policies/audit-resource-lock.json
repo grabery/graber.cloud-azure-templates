@@ -1,42 +1,80 @@
 {
     "properties": {
-      "displayName": "Azure resources should be locked",
+      "displayName": "Azure resource groups should be locked - Audit and deploy lock",
       "policyType": "Custom",
       "mode": "All",
-      "description": "This policy audits any azure resource groups which are not locked",
+      "description": "This policy audits any azure resource group and audit, if the RG is locked. If not, a lock will be deployed automatically. You can exclude RGs from the audit based on a tag you define",
       "metadata": {
-        "version": "2.0.0",
+        "version": "0.1.0",
         "category": "Governance"
       },
       "parameters": {
-        "ApplyPolicyTo": {
-          "type": "String",
-          "metadata": {
-            "displayName": "Apply to tagged or all RG",
-            "description": "Choose if you want to check it for only specific tagged or for all resource groups."
-          },
-          "allowedValues": [
-            "Tagged",
-            "All"
-          ],
-          "defaultValue": "All"
-        },
-        "TagOfRg": {
+        "TagOfExclusion": {
             "type":"String",
             "metadata": {
-                "displayName": "Tag to check",
-                "description": "If you want to check only resource groups with a specific tag, define the name of the tag you want to check."
+                "displayName": "Tag to check for exclusion",
+                "description": "If there is a need to exclude RGs from the audit based on a tag, you can do so. In this field, define which tag you want to check for it's value."
             },
-            "defaultValue": ""
+            "defaultValue": "AutoLockExclusion"
         },
         "TagValue": {
             "type":"String",
             "metadata":{
-                "displayName": "Value of the tag to check",
-                "description": "If you want to check only resource groups with a specific tag, define here the value of the tag you want to check."
+                "displayName": "Value of the tag for exclusion",
+                "description": "If you decided to configure an exclusion, you need to configure a specific value of the tag you defined. Put the tag value for exclusion in this field"
             },
-            "defaultValue": ""
+            "defaultValue": "true"
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+            },
+            {
+              "not": {
+                "field": "[concat('tags[', parameters('TagOfExclusion'), ']')]",
+                "equals": "[parameters('TagValue')]"
+              }
+            }
+          ]
+        },
+        "then": {
+          "effect": "DeployIfNotExists",
+          "details": {
+            "type": "Microsoft.Authorization/locks",
+            "roleDefinitionIds": [
+
+            ],
+            "existenceCondition": {
+              "field": "Microsoft.Authorization/locks/level",
+              "equals": "CanNotDelete"
+            },
+            "deployment": {
+              "properties": {
+                "mode": "incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [
+                    {
+                      "name": "Auto locked by policy",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2019-04-01", 
+                      "properties": {
+                        "level": "CanNotDelete",
+                        "notes": "This lock was deployed automatically by Azure Policy to prevent the resource group and its containing resources from accidental deletion."
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
         }
       }
-    }
-}
+    },
+    "type": "Microsoft.Authorization/policyDefinitions"
+  }
