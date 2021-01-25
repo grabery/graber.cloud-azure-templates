@@ -42,11 +42,11 @@
           ]
         },
         "then": {
-          "effect": "DeployIfNotExists",
+          "effect": "deployIfNotExists",
           "details": {
             "type": "Microsoft.Authorization/locks",
             "roleDefinitionIds": [
-
+              "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
             ],
             "existenceCondition": {
               "field": "Microsoft.Authorization/locks/level",
