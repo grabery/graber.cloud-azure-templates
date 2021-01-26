@@ -62,7 +62,7 @@
                     {
                       "name": "Auto locked by policy",
                       "type": "Microsoft.Authorization/locks",
-                      "apiVersion": "2019-04-01", 
+                      "apiVersion": "2017-04-01", 
                       "properties": {
                         "level": "CanNotDelete",
                         "notes": "This lock was deployed automatically by Azure Policy to prevent the resource group and its containing resources from accidental deletion."
