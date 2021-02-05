@@ -5,7 +5,7 @@
       "mode": "All",
       "description": "This policy audits any azure resource group and audit, if the RG is locked. If not, a lock will be deployed automatically. You can exclude RGs from the audit based on a tag you define",
       "metadata": {
-        "version": "0.1.0",
+        "version": "0.3.0",
         "category": "Governance"
       },
       "parameters": {
