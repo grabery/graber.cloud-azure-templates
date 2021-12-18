@@ -5,17 +5,17 @@ param Owner string
 param rgName string
 param STname string
 
-module newRG 'modules/rg-creation.bicep' = {
-  name: 'RGcreate'
-  params: {
-    location: rglocation
+
+resource newRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: rgName
+  location: rglocation
+  tags: {
     Owner: Owner
-    rgName: rgName
   }
 }
 
 module Storage 'modules/storageAcc.bicep' = {
-  scope: resourceGroup(rgName)
+  scope: newRG
   name: 'STcreate'
   params: {
     location: rglocation
