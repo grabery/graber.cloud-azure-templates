@@ -1,1 +1,3 @@
-
+AlertInfo
+| union AlertEvidence
+| summarize RecordCount = count(), AlertTotalSizeMB = round(sum(estimate_data_size(*))/pow(1024,2),2)
