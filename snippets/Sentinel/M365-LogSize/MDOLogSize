@@ -1,0 +1,6 @@
+EmailEvents
+| union EmailUrlInfo
+| union EmailAttachmentInfo
+| union EmailPostDeliveryEvents
+| union UrlClickEvents
+| summarize RecordCount = count(), MDOTotalSizeMB = round(sum(estimate_data_size(*))/pow(1024,2),2)
